@@ -7,6 +7,13 @@ package mainprogram;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 /**
  *
@@ -20,6 +27,54 @@ public class MainProgram extends javax.swing.JPanel {
     public MainProgram() {
         initComponents();
     }
+    
+    private JFrame frame;
+    
+    public void setFrame(JFrame frame){
+        
+        this.frame = frame;
+        this.frame.getContentPane().add(this.anaEkran);
+        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.frame.pack();
+        this.frame.setResizable(false);
+        this.frame.setLocationRelativeTo(null);
+        this.frame.setVisible(true);
+       
+    }
+    
+    
+    public void switchPanel(JPanel panel){
+        
+        this.frame.getContentPane().removeAll();
+        this.frame.getContentPane().add(panel);
+        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.frame.pack();
+        this.frame.setVisible(true);
+        
+    }
+    
+    
+    public static Connection getDatabaseConnection(){
+        
+        Connection conn = null;
+        try{
+            String url = "jdbc:sqlite:sistem.db";   
+        
+            conn = DriverManager.getConnection(url);
+            System.out.println("Connection to SQLite has been established.");
+            
+            
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        
+        return conn;
+        
+        
+    }
+    
+    
+  
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -30,81 +85,446 @@ public class MainProgram extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        dersKaydiEkrani = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        dersAdi = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        gun = new javax.swing.JComboBox();
+        jLabel7 = new javax.swing.JLabel();
+        saat = new javax.swing.JComboBox();
+        jLabel8 = new javax.swing.JLabel();
+        kapasite = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
+        anaEkran = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
+        ogretmenKaydiEkrani = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
+        jButton10 = new javax.swing.JButton();
 
-        jLabel1.setText("Test için butona basınız.");
+        dersKaydiEkrani.setBackground(new java.awt.Color(255, 255, 255));
 
-        jButton1.setText("Buton");
+        jLabel4.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(51, 51, 255));
+        jLabel4.setText("Ders Kayıt Ekranı");
+
+        dersAdi.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+
+        jLabel5.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel5.setText("Ders Günü:");
+
+        jLabel6.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel6.setText("Ders Adı:");
+
+        gun.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        gun.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar" }));
+        gun.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                gunActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel7.setText("Ders Saati:");
+
+        saat.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        saat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "9.00", "10.00", "11.00", "12.00", "13.00", "14.00", "15.00", "16.00", "17.00", "18.00" }));
+
+        jLabel8.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel8.setText("Ders Kapasitesi:");
+
+        kapasite.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        kapasite.setText("20");
+        kapasite.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                kapasiteActionPerformed(evt);
+            }
+        });
+
+        jButton1.setBackground(new java.awt.Color(51, 153, 0));
+        jButton1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("Kaydet");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(150, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(132, 132, 132))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addGap(188, 188, 188))))
+        jButton9.setBackground(new java.awt.Color(153, 0, 0));
+        jButton9.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jButton9.setForeground(new java.awt.Color(255, 255, 255));
+        jButton9.setText("İptal");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout dersKaydiEkraniLayout = new javax.swing.GroupLayout(dersKaydiEkrani);
+        dersKaydiEkrani.setLayout(dersKaydiEkraniLayout);
+        dersKaydiEkraniLayout.setHorizontalGroup(
+            dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dersKaydiEkraniLayout.createSequentialGroup()
+                .addGap(67, 67, 67)
+                .addGroup(dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(dersKaydiEkraniLayout.createSequentialGroup()
+                        .addGroup(dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(dersKaydiEkraniLayout.createSequentialGroup()
+                                .addGroup(dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel8)
+                                    .addComponent(jLabel7))
+                                .addGap(18, 18, 18)
+                                .addGroup(dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(saat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(kapasite, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addContainerGap())
+                    .addGroup(dersKaydiEkraniLayout.createSequentialGroup()
+                        .addGroup(dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6))
+                        .addGap(68, 68, 68)
+                        .addGroup(dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(dersKaydiEkraniLayout.createSequentialGroup()
+                                .addComponent(dersAdi, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(dersKaydiEkraniLayout.createSequentialGroup()
+                                .addComponent(gun, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dersKaydiEkraniLayout.createSequentialGroup()
+                .addContainerGap(352, Short.MAX_VALUE)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(334, 334, 334))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(42, 42, 42)
-                .addComponent(jLabel1)
-                .addGap(84, 84, 84)
-                .addComponent(jButton1)
-                .addContainerGap(87, Short.MAX_VALUE))
+        dersKaydiEkraniLayout.setVerticalGroup(
+            dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dersKaydiEkraniLayout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(103, 103, 103)
+                .addGroup(dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(dersAdi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
+                .addGap(43, 43, 43)
+                .addGroup(dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(gun, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(52, 52, 52)
+                .addGroup(dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(saat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(43, 43, 43)
+                .addGroup(dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(kapasite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(99, 99, 99)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
+                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(71, Short.MAX_VALUE))
+        );
+
+        anaEkran.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel1.setText("EL SANATLARI KURSU PROGRAMI");
+        jLabel1.setToolTipText("");
+
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mainprogram/image/77.jpg"))); // NOI18N
+        jLabel3.setText("jLabel3");
+
+        jButton2.setForeground(new java.awt.Color(255, 51, 51));
+        jButton2.setText("Öğretmen Kaydı Gerçekleştir");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setForeground(new java.awt.Color(51, 51, 255));
+        jButton4.setText("Ders Kaydı Gerçekleştir");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabel2.setText("*İŞLEM MENÜSÜ*");
+
+        jButton5.setText("Kurs Programı Hazırla");
+
+        jButton6.setForeground(new java.awt.Color(204, 0, 204));
+        jButton6.setText("Kurs Satışı Yap");
+
+        jButton7.setBackground(new java.awt.Color(0, 204, 0));
+        jButton7.setForeground(new java.awt.Color(255, 255, 255));
+        jButton7.setText("Kursiyer Bilgilerini Görüntüle");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
+        jButton8.setBackground(new java.awt.Color(0, 0, 204));
+        jButton8.setForeground(new java.awt.Color(255, 255, 255));
+        jButton8.setText("Öğretmen Bilgilerini Görüntüle");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout anaEkranLayout = new javax.swing.GroupLayout(anaEkran);
+        anaEkran.setLayout(anaEkranLayout);
+        anaEkranLayout.setHorizontalGroup(
+            anaEkranLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, anaEkranLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(anaEkranLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(385, 385, 385))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, anaEkranLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(anaEkranLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, anaEkranLayout.createSequentialGroup()
+                        .addGroup(anaEkranLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 583, Short.MAX_VALUE)
+                            .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(161, 161, 161))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, anaEkranLayout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(265, 265, 265))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, anaEkranLayout.createSequentialGroup()
+                .addGap(230, 230, 230)
+                .addComponent(jButton7)
+                .addGap(27, 27, 27)
+                .addComponent(jButton8)
+                .addContainerGap(198, Short.MAX_VALUE))
+        );
+        anaEkranLayout.setVerticalGroup(
+            anaEkranLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(anaEkranLayout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addGap(60, 60, 60)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton2)
+                .addGap(18, 18, 18)
+                .addComponent(jButton4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton6)
+                .addGap(85, 85, 85)
+                .addGroup(anaEkranLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton8)
+                    .addComponent(jButton7))
+                .addContainerGap(92, Short.MAX_VALUE))
+        );
+
+        ogretmenKaydiEkrani.setBackground(new java.awt.Color(255, 255, 255));
+        ogretmenKaydiEkrani.setPreferredSize(new java.awt.Dimension(929, 742));
+
+        jLabel9.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(204, 0, 51));
+        jLabel9.setText("Öğretmen Kaydı Ekranı");
+
+        jButton10.setBackground(new java.awt.Color(153, 0, 0));
+        jButton10.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jButton10.setForeground(new java.awt.Color(255, 255, 255));
+        jButton10.setText("İptal");
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout ogretmenKaydiEkraniLayout = new javax.swing.GroupLayout(ogretmenKaydiEkrani);
+        ogretmenKaydiEkrani.setLayout(ogretmenKaydiEkraniLayout);
+        ogretmenKaydiEkraniLayout.setHorizontalGroup(
+            ogretmenKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ogretmenKaydiEkraniLayout.createSequentialGroup()
+                .addGroup(ogretmenKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(ogretmenKaydiEkraniLayout.createSequentialGroup()
+                        .addGap(301, 301, 301)
+                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(ogretmenKaydiEkraniLayout.createSequentialGroup()
+                        .addGap(66, 66, 66)
+                        .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(314, Short.MAX_VALUE))
+        );
+        ogretmenKaydiEkraniLayout.setVerticalGroup(
+            ogretmenKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ogretmenKaydiEkraniLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 516, Short.MAX_VALUE)
+                .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(96, 96, 96))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(53, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(49, 49, 49))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(55, 55, 55)
+                .addComponent(anaEkran, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(619, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(751, 751, 751)
+                    .addComponent(dersKaydiEkrani, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(ogretmenKaydiEkrani, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(56, 56, 56)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(57, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(anaEkran, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(245, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(447, 447, 447)
+                    .addComponent(dersKaydiEkrani, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(ogretmenKaydiEkrani, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        this.switchPanel(ogretmenKaydiEkrani);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(jPanel1,"Butona basıldı!", "Bilgi Kutusu", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+       this.switchPanel(dersKaydiEkrani);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void gunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gunActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_gunActionPerformed
+
+    private void kapasiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kapasiteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_kapasiteActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        String[] options = new String[2];
+        options[0] = new String("Evet");
+        options[1] = new String("Hayır");
+        int output = JOptionPane.showOptionDialog(this.frame.getContentPane(),"Dersi eklemek istediğinize emin misiniz?","Ders Ekleme Onayı", 0,JOptionPane.QUESTION_MESSAGE,null,options,null);
+        
+        
+        //Ders ekleme islemi onaylandi ise
+        if (output == 0) {
+            
+            //Input kisimlari dogru girildi mi?
+            if (Integer.parseInt(kapasite.getText()) < 1) {
+                JOptionPane.showMessageDialog(this.frame.getContentPane(),"Kapasite sıfırdan büyük olmalıdır!","Hata",JOptionPane.ERROR_MESSAGE);
+            }
+            
+            else if (dersAdi.getText().compareTo("") == 0) {
+                JOptionPane.showMessageDialog(this.frame.getContentPane(),"Ders adı boş bırakılamaz!","Hata",JOptionPane.ERROR_MESSAGE);
+                
+            }
+            
+            //Sorun yok ise
+            else{                           
+                            
+                Ders ders = Ders.getInstance();
+                ders.setDersAdi(dersAdi.getText());
+                ders.setDersGunu(gun.getSelectedItem().toString());
+                ders.setDersSaati(saat.getSelectedItem().toString());
+                ders.setDersKapasitesi(Integer.parseInt(kapasite.getText()));
+                
+                
+                ders.writeDB();
+                
+            }       
+
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+    
+        this.switchPanel(anaEkran);
+        
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        this.switchPanel(anaEkran);
+    }//GEN-LAST:event_jButton10ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel anaEkran;
+    private javax.swing.JTextField dersAdi;
+    private javax.swing.JPanel dersKaydiEkrani;
+    private javax.swing.JComboBox gun;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JTextField kapasite;
+    private javax.swing.JPanel ogretmenKaydiEkrani;
+    private javax.swing.JComboBox saat;
     // End of variables declaration//GEN-END:variables
 
 
     public static void main(String[] args) {
-        
-        JFrame frame = new JFrame("Deneme App");
-        frame.setContentPane(new MainProgram().jPanel1);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
+          
+        MainProgram mainProgram = new MainProgram();
+        JFrame frame = new JFrame("El Sanatları Kursu Programı");
+        mainProgram.setFrame(frame);
 
     }
     
