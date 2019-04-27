@@ -26,10 +26,6 @@ public class Ogretmen extends Kisi{
     
        
     
-    //Contructor private yapiliyor. Singleton design pattern.
-    private Ogretmen(){}
-    
-    
     
     public static Ogretmen getInstance(){
         return new Ogretmen();
@@ -121,9 +117,10 @@ public class Ogretmen extends Kisi{
     /* Ogretmen kaydi bolumundeki bilgileri girilen ogretmeni veri tabanina ekler.*/
     public void writeDB(){
                     
-        String sql1 = "INSERT INTO Ogretmen(ad,soyad,evTel,cepTel,adres,email) VALUES(?,?,?,?,?,?)";
+        String sql1 = "INSERT INTO Ogretmen(ad,soyad,ev_tel,cep_tel,adr,email) VALUES(?,?,?,?,?,?)";
         String sql2 = "INSERT INTO Verebildigi_Dersler(ogretmen_id,ders_adi,bedel) VALUES(?,?,?)";
         String sql3 = "SELECT MAX(id) FROM Ogretmen";
+        String sql4 = "INSERT INTO Calisabildigi_Saatler(ogretmen_id,saat) VALUES(?,?)";
         Connection conn = MainProgram.getDatabaseConnection();
         
         
@@ -131,6 +128,7 @@ public class Ogretmen extends Kisi{
         try{
                 PreparedStatement pstmt = conn.prepareStatement(sql1);
                 PreparedStatement pstmt2 = conn.prepareStatement(sql2);
+                PreparedStatement pstmt3 = conn.prepareStatement(sql4);
                 Statement stmt  = conn.createStatement();
                 
                 pstmt.setString(1, this.ad);
@@ -143,9 +141,9 @@ public class Ogretmen extends Kisi{
                 pstmt.executeUpdate();
                 
                 
-                //Ogretmen icin otomatik olusturulmus id veri tabanindan cekiliyor
                 ResultSet rs = stmt.executeQuery(sql3);
-                this.id = rs.getInt("id");
+                this.id = rs.getInt(1);
+
                 
                 
                 //Verebildigi dersler yaziliyor
@@ -153,12 +151,21 @@ public class Ogretmen extends Kisi{
                     
                     pstmt2.setInt(1, this.id);
                     pstmt2.setString(2, dersAdi);
-                    pstmt2.setInt(2, derslerBedeller.get(dersAdi).intValue() );
+                    pstmt2.setInt(3, derslerBedeller.get(dersAdi).intValue() );
                     pstmt2.executeUpdate();
+                }
+                
+                
+                //Calisabildigi saatler yaziliyor
+                for (String i : this.calisabildigiSaatler) {
+                    
+                    pstmt3.setInt(1, this.id);
+                    pstmt3.setString(2, i);
+                    pstmt3.executeUpdate();
                 }
 
                 
-                
+                conn.close();
                 
                 
         } catch (SQLException e) {

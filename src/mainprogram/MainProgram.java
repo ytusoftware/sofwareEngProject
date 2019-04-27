@@ -15,6 +15,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.ListModel;
@@ -36,9 +40,21 @@ public class MainProgram extends javax.swing.JPanel {
     
     
     private JFrame frame;
-    //Bu uye alanlari tablo ve liste islemleri icin kullanilmistir
+    
+    //Bu uye alanlari tablo ve liste modelleri icin kullanilmistir
     public DefaultListModel<String> dl = new DefaultListModel<>();
     public DefaultTableModel table_model = new DefaultTableModel(new Object[] {"Ders Adı", "Bedel"},0);
+    public DefaultTableModel tm_eklenebilecek_dersler = new DefaultTableModel(new Object[] {"Ders Id", "Ders Adı","Ders Günü","Ders Saati"},0);
+    public DefaultTableModel tm_eklenen_dersler = new DefaultTableModel(new Object[] {"Ders Id", "Ders Adı","Ders Günü","Ders Saati"},0);
+    public DefaultTableModel tm_ogretmen_atama = new DefaultTableModel(new Object[] {"Ders Adı","Ders Saati","Öğretmen Id","Öğretmen Adı","Öğretmen Soyadı", "Bedel (TL)"},0);
+    
+    
+    
+    
+    //Bu uye alanlari eventler arasindaki geciste nesneleri global olarak saklamak icin kullanilmistir
+    public ArrayList<Ders> eklenenDersler = new ArrayList<Ders>();
+    public int maliyet;
+    
     
     public void setFrame(JFrame frame){
         
@@ -55,11 +71,11 @@ public class MainProgram extends javax.swing.JPanel {
     
     public void switchPanel(JPanel panel){
         
-        this.frame.getContentPane().removeAll();
+        this.frame.getContentPane().removeAll();   
         this.frame.getContentPane().add(panel);
-        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.frame.pack();
-        this.frame.setVisible(true);
+        this.frame.validate();
+        this.frame.repaint();
+        
         
     }
     
@@ -113,7 +129,7 @@ public class MainProgram extends javax.swing.JPanel {
     
     //Veri tabanına kategorik ders bilgisi ekler
     public void addDersBilgisiVT(String ders){
-        String sql = "INSERT INTO Ders_Bigileri (ders_adi) VALUES (%s)";
+        String sql = "INSERT INTO Ders_Bilgileri(ders_adi) VALUES (?)";
         Connection conn = MainProgram.getDatabaseConnection();
  
         try{
@@ -126,6 +142,7 @@ public class MainProgram extends javax.swing.JPanel {
                 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this.frame.getContentPane(),"Bu isimde ders zaten mevcuttur!","Hata",JOptionPane.ERROR_MESSAGE);
+            System.out.println(e.getMessage());
             
         }
         
@@ -155,6 +172,8 @@ public class MainProgram extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
         dersAdi = new javax.swing.JComboBox();
+        jLabel23 = new javax.swing.JLabel();
+        sinif = new javax.swing.JComboBox();
         anaEkran = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -172,13 +191,13 @@ public class MainProgram extends javax.swing.JPanel {
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
+        ogretmen_soyadi = new javax.swing.JTextField();
+        ogretmen_adi = new javax.swing.JTextField();
+        cep_tel = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        ev_tel = new javax.swing.JTextField();
         jLabel16 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        email = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         l_calisabildigiSaatler = new javax.swing.JList();
         jLabel17 = new javax.swing.JLabel();
@@ -188,12 +207,42 @@ public class MainProgram extends javax.swing.JPanel {
         jButton3 = new javax.swing.JButton();
         jButton14 = new javax.swing.JButton();
         jButton15 = new javax.swing.JButton();
+        jLabel19 = new javax.swing.JLabel();
+        adres = new javax.swing.JTextField();
         dersEkleEkrani = new javax.swing.JPanel();
         jButton12 = new javax.swing.JButton();
         dersAdi2 = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jButton13 = new javax.swing.JButton();
+        kursHazirlamaEkrani = new javax.swing.JPanel();
+        jLabel20 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        s_kurs_tipi = new javax.swing.JComboBox();
+        b_ders_getir = new javax.swing.JButton();
+        jButton16 = new javax.swing.JButton();
+        jButton17 = new javax.swing.JButton();
+        jButton18 = new javax.swing.JButton();
+        jButton19 = new javax.swing.JButton();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        t_eklenebilecek_dersler = new javax.swing.JTable();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        t_eklenen_dersler = new javax.swing.JTable();
+        kursHazirlamaEkrani2 = new javax.swing.JPanel();
+        jLabel22 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        t_ogretmen_atama = new javax.swing.JTable();
+        jButton21 = new javax.swing.JButton();
+        jButton22 = new javax.swing.JButton();
+        jButton20 = new javax.swing.JButton();
+        kursHazirlamaEkrani3 = new javax.swing.JPanel();
+        jLabel24 = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
+        jLabel26 = new javax.swing.JLabel();
+        jButton23 = new javax.swing.JButton();
+        jButton24 = new javax.swing.JButton();
+        jLabel27 = new javax.swing.JLabel();
+        kurs_adi = new javax.swing.JTextField();
 
         dersKaydiEkrani.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -254,6 +303,17 @@ public class MainProgram extends javax.swing.JPanel {
 
         dersAdi.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
 
+        jLabel23.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel23.setText("Ders Sınıfı:");
+
+        sinif.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        sinif.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "S-101", "S-102", "S-103", "S-104", "S-105", "S-106", "S-107", "S-108" }));
+        sinif.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sinifActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout dersKaydiEkraniLayout = new javax.swing.GroupLayout(dersKaydiEkrani);
         dersKaydiEkrani.setLayout(dersKaydiEkraniLayout);
         dersKaydiEkraniLayout.setHorizontalGroup(
@@ -265,16 +325,6 @@ public class MainProgram extends javax.swing.JPanel {
             .addGroup(dersKaydiEkraniLayout.createSequentialGroup()
                 .addGap(67, 67, 67)
                 .addGroup(dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(dersKaydiEkraniLayout.createSequentialGroup()
-                        .addGroup(dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel7))
-                        .addGap(18, 18, 18)
-                        .addGroup(dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(saat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(kapasite, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(dersKaydiEkraniLayout.createSequentialGroup()
                         .addGroup(dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
@@ -282,7 +332,21 @@ public class MainProgram extends javax.swing.JPanel {
                         .addGap(68, 68, 68)
                         .addGroup(dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(gun, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(dersAdi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(dersAdi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(dersKaydiEkraniLayout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(dersKaydiEkraniLayout.createSequentialGroup()
+                        .addGroup(dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel23))
+                        .addGap(18, 18, 18)
+                        .addGroup(dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(sinif, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(saat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(kapasite, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         dersKaydiEkraniLayout.setVerticalGroup(
@@ -306,11 +370,15 @@ public class MainProgram extends javax.swing.JPanel {
                 .addGroup(dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(kapasite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(106, 106, 106)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
-                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(64, Short.MAX_VALUE))
+                .addGap(32, 32, 32)
+                .addGroup(dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel23)
+                    .addComponent(sinif, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 130, Short.MAX_VALUE)
+                .addGroup(dersKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(49, 49, 49))
         );
 
         anaEkran.setBackground(new java.awt.Color(255, 255, 255));
@@ -345,6 +413,11 @@ public class MainProgram extends javax.swing.JPanel {
 
         jButton5.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jButton5.setText("Kurs Programı Hazırla");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jButton6.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jButton6.setForeground(new java.awt.Color(204, 0, 204));
@@ -384,29 +457,30 @@ public class MainProgram extends javax.swing.JPanel {
         anaEkranLayout.setHorizontalGroup(
             anaEkranLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(anaEkranLayout.createSequentialGroup()
-                .addContainerGap(185, Short.MAX_VALUE)
+                .addContainerGap(174, Short.MAX_VALUE)
                 .addGroup(anaEkranLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, anaEkranLayout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(385, 385, 385))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, anaEkranLayout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(247, 247, 247))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, anaEkranLayout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(377, 377, 377))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, anaEkranLayout.createSequentialGroup()
                         .addGroup(anaEkranLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(anaEkranLayout.createSequentialGroup()
                                 .addComponent(jButton7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jButton8))
-                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 583, Short.MAX_VALUE)
-                            .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(161, 161, 161))))
+                            .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 583, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 583, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 583, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 583, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 583, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(172, 172, 172))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, anaEkranLayout.createSequentialGroup()
+                        .addGroup(anaEkranLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, anaEkranLayout.createSequentialGroup()
+                                .addGap(8, 8, 8)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(394, 394, 394))))
         );
         anaEkranLayout.setVerticalGroup(
             anaEkranLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -421,13 +495,13 @@ public class MainProgram extends javax.swing.JPanel {
                 .addComponent(jButton2)
                 .addGap(18, 18, 18)
                 .addComponent(jButton11)
-                .addGap(18, 18, 18)
+                .addGap(12, 12, 12)
                 .addComponent(jButton4)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton5)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton6)
-                .addGap(37, 37, 37)
+                .addGap(55, 55, 55)
                 .addGroup(anaEkranLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton8)
                     .addComponent(jButton7))
@@ -435,7 +509,7 @@ public class MainProgram extends javax.swing.JPanel {
         );
 
         ogretmenKaydiEkrani.setBackground(new java.awt.Color(255, 255, 255));
-        ogretmenKaydiEkrani.setPreferredSize(new java.awt.Dimension(929, 742));
+        ogretmenKaydiEkrani.setPreferredSize(new java.awt.Dimension(929, 755));
 
         jLabel9.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(204, 0, 51));
@@ -460,44 +534,44 @@ public class MainProgram extends javax.swing.JPanel {
         jLabel14.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel14.setText("Öğretmen Soyadı:");
 
-        jTextField1.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        ogretmen_soyadi.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        ogretmen_soyadi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                ogretmen_soyadiActionPerformed(evt);
             }
         });
 
-        jTextField2.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        ogretmen_adi.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        ogretmen_adi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                ogretmen_adiActionPerformed(evt);
             }
         });
 
-        jTextField3.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+        cep_tel.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        cep_tel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
+                cep_telActionPerformed(evt);
             }
         });
 
         jLabel15.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel15.setText("Cep Telefonu");
 
-        jTextField4.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        jTextField4.addActionListener(new java.awt.event.ActionListener() {
+        ev_tel.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        ev_tel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField4ActionPerformed(evt);
+                ev_telActionPerformed(evt);
             }
         });
 
         jLabel16.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jLabel16.setText("Çalışabildiği Saatler:");
+        jLabel16.setText("Adres:");
 
-        jTextField5.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        jTextField5.addActionListener(new java.awt.event.ActionListener() {
+        email.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        email.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField5ActionPerformed(evt);
+                emailActionPerformed(evt);
             }
         });
 
@@ -555,18 +629,24 @@ public class MainProgram extends javax.swing.JPanel {
             }
         });
 
+        jLabel19.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel19.setText("Çalışabildiği Saatler:");
+
+        adres.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        adres.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adresActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout ogretmenKaydiEkraniLayout = new javax.swing.GroupLayout(ogretmenKaydiEkrani);
         ogretmenKaydiEkrani.setLayout(ogretmenKaydiEkraniLayout);
         ogretmenKaydiEkraniLayout.setHorizontalGroup(
             ogretmenKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ogretmenKaydiEkraniLayout.createSequentialGroup()
-                .addContainerGap(278, Short.MAX_VALUE)
-                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(337, 337, 337))
             .addGroup(ogretmenKaydiEkraniLayout.createSequentialGroup()
-                .addGap(97, 97, 97)
                 .addGroup(ogretmenKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(ogretmenKaydiEkraniLayout.createSequentialGroup()
+                        .addGap(79, 79, 79)
                         .addGroup(ogretmenKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel13)
                             .addComponent(jLabel12)
@@ -574,6 +654,7 @@ public class MainProgram extends javax.swing.JPanel {
                             .addComponent(jLabel15)
                             .addComponent(jLabel17)
                             .addComponent(jLabel16)
+                            .addComponent(jLabel19)
                             .addComponent(jLabel18))
                         .addGap(26, 26, 26)
                         .addGroup(ogretmenKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -581,58 +662,65 @@ public class MainProgram extends javax.swing.JPanel {
                             .addGroup(ogretmenKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
-                                .addComponent(jTextField5)
-                                .addComponent(jTextField3)
-                                .addComponent(jTextField4)
-                                .addComponent(jTextField1)
-                                .addComponent(jTextField2))
-                            .addComponent(jButton14)))
+                                .addComponent(email)
+                                .addComponent(cep_tel)
+                                .addComponent(ev_tel)
+                                .addComponent(ogretmen_soyadi)
+                                .addComponent(ogretmen_adi)
+                                .addComponent(adres))
+                            .addComponent(jButton14)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(ogretmenKaydiEkraniLayout.createSequentialGroup()
-                        .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(64, 64, 64)
+                        .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(306, Short.MAX_VALUE))
         );
         ogretmenKaydiEkraniLayout.setVerticalGroup(
             ogretmenKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ogretmenKaydiEkraniLayout.createSequentialGroup()
-                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
-                .addGroup(ogretmenKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel12)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(36, 36, 36)
                 .addGroup(ogretmenKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ogretmen_adi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel12))
+                .addGap(30, 30, 30)
+                .addGroup(ogretmenKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(29, 29, 29)
+                    .addComponent(ogretmen_soyadi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(28, 28, 28)
                 .addGroup(ogretmenKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ev_tel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(34, 34, 34)
                 .addGroup(ogretmenKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel15)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(25, 25, 25)
+                    .addComponent(cep_tel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30)
                 .addGroup(ogretmenKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel17)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(41, 41, 41)
-                .addGroup(ogretmenKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(email, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(36, 36, 36)
+                .addGroup(ogretmenKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel16)
+                    .addComponent(adres, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(44, 44, 44)
+                .addGroup(ogretmenKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel19)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton14)
-                .addGap(43, 43, 43)
+                .addGap(38, 38, 38)
                 .addGroup(ogretmenKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel18)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                 .addGroup(ogretmenKaydiEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -686,11 +774,11 @@ public class MainProgram extends javax.swing.JPanel {
                     .addGroup(dersEkleEkraniLayout.createSequentialGroup()
                         .addGap(60, 60, 60)
                         .addGroup(dersEkleEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(dersEkleEkraniLayout.createSequentialGroup()
                                 .addComponent(jLabel11)
                                 .addGap(32, 32, 32)
                                 .addComponent(dersAdi2, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(350, Short.MAX_VALUE))
         );
@@ -710,6 +798,326 @@ public class MainProgram extends javax.swing.JPanel {
                 .addContainerGap(342, Short.MAX_VALUE))
         );
 
+        kursHazirlamaEkrani.setBackground(new java.awt.Color(255, 255, 255));
+        kursHazirlamaEkrani.setPreferredSize(new java.awt.Dimension(929, 742));
+
+        jLabel20.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel20.setForeground(new java.awt.Color(204, 0, 0));
+        jLabel20.setText("Kurs Programı Hazırlama Ekranı");
+
+        jLabel21.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel21.setText("Kurs tipi seçiniz:");
+
+        s_kurs_tipi.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        s_kurs_tipi.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Hafta İçi", "Hafta Sonu" }));
+
+        b_ders_getir.setBackground(new java.awt.Color(153, 102, 0));
+        b_ders_getir.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        b_ders_getir.setForeground(new java.awt.Color(255, 255, 255));
+        b_ders_getir.setText("Kursa Eklenebilecek Dersleri Listele");
+        b_ders_getir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_ders_getirActionPerformed(evt);
+            }
+        });
+
+        jButton16.setBackground(new java.awt.Color(0, 0, 255));
+        jButton16.setForeground(new java.awt.Color(255, 255, 255));
+        jButton16.setText("Devam Et");
+        jButton16.setEnabled(false);
+        jButton16.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton16ActionPerformed(evt);
+            }
+        });
+
+        jButton17.setBackground(new java.awt.Color(255, 255, 255));
+        jButton17.setForeground(new java.awt.Color(0, 153, 0));
+        jButton17.setText("Seçilen Dersi Ekle");
+        jButton17.setEnabled(false);
+        jButton17.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton17ActionPerformed(evt);
+            }
+        });
+
+        jButton18.setBackground(new java.awt.Color(255, 255, 255));
+        jButton18.setForeground(new java.awt.Color(204, 0, 0));
+        jButton18.setText("Seçilen Dersi Sil");
+        jButton18.setEnabled(false);
+        jButton18.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton18ActionPerformed(evt);
+            }
+        });
+
+        jButton19.setBackground(new java.awt.Color(153, 0, 0));
+        jButton19.setForeground(new java.awt.Color(255, 255, 255));
+        jButton19.setText("İptal");
+        jButton19.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton19ActionPerformed(evt);
+            }
+        });
+
+        t_eklenebilecek_dersler.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane6.setViewportView(t_eklenebilecek_dersler);
+
+        t_eklenen_dersler.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane3.setViewportView(t_eklenen_dersler);
+
+        javax.swing.GroupLayout kursHazirlamaEkraniLayout = new javax.swing.GroupLayout(kursHazirlamaEkrani);
+        kursHazirlamaEkrani.setLayout(kursHazirlamaEkraniLayout);
+        kursHazirlamaEkraniLayout.setHorizontalGroup(
+            kursHazirlamaEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(kursHazirlamaEkraniLayout.createSequentialGroup()
+                .addGap(256, 256, 256)
+                .addComponent(jLabel20)
+                .addContainerGap(257, Short.MAX_VALUE))
+            .addGroup(kursHazirlamaEkraniLayout.createSequentialGroup()
+                .addGap(42, 42, 42)
+                .addGroup(kursHazirlamaEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(kursHazirlamaEkraniLayout.createSequentialGroup()
+                        .addGroup(kursHazirlamaEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(b_ders_getir)
+                            .addGroup(kursHazirlamaEkraniLayout.createSequentialGroup()
+                                .addComponent(jLabel21)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(s_kurs_tipi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jButton17))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(kursHazirlamaEkraniLayout.createSequentialGroup()
+                        .addGroup(kursHazirlamaEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, kursHazirlamaEkraniLayout.createSequentialGroup()
+                                .addComponent(jButton16, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButton19, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jButton18, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 849, Short.MAX_VALUE)
+                            .addComponent(jScrollPane6, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGap(0, 0, Short.MAX_VALUE))))
+        );
+        kursHazirlamaEkraniLayout.setVerticalGroup(
+            kursHazirlamaEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(kursHazirlamaEkraniLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel20)
+                .addGap(72, 72, 72)
+                .addGroup(kursHazirlamaEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel21)
+                    .addComponent(s_kurs_tipi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(32, 32, 32)
+                .addComponent(b_ders_getir)
+                .addGap(66, 66, 66)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton17)
+                .addGap(40, 40, 40)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
+                .addGroup(kursHazirlamaEkraniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton16, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton19, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(23, 23, 23))
+        );
+
+        kursHazirlamaEkrani2.setBackground(new java.awt.Color(255, 255, 255));
+        kursHazirlamaEkrani2.setPreferredSize(new java.awt.Dimension(929, 742));
+
+        jLabel22.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel22.setForeground(new java.awt.Color(204, 0, 0));
+        jLabel22.setText("Kurs Programı Hazırlama Ekranı");
+
+        t_ogretmen_atama.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane4.setViewportView(t_ogretmen_atama);
+
+        jButton21.setBackground(new java.awt.Color(255, 102, 0));
+        jButton21.setForeground(new java.awt.Color(255, 255, 255));
+        jButton21.setText("Seçilen Derse Öğretmen Ata");
+        jButton21.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton21ActionPerformed(evt);
+            }
+        });
+
+        jButton22.setBackground(new java.awt.Color(0, 0, 255));
+        jButton22.setForeground(new java.awt.Color(255, 255, 255));
+        jButton22.setText("Devam Et");
+        jButton22.setEnabled(false);
+        jButton22.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton22ActionPerformed(evt);
+            }
+        });
+
+        jButton20.setBackground(new java.awt.Color(153, 0, 0));
+        jButton20.setForeground(new java.awt.Color(255, 255, 255));
+        jButton20.setText("Geri");
+        jButton20.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton20ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout kursHazirlamaEkrani2Layout = new javax.swing.GroupLayout(kursHazirlamaEkrani2);
+        kursHazirlamaEkrani2.setLayout(kursHazirlamaEkrani2Layout);
+        kursHazirlamaEkrani2Layout.setHorizontalGroup(
+            kursHazirlamaEkrani2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, kursHazirlamaEkrani2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel22)
+                .addGap(252, 252, 252))
+            .addGroup(kursHazirlamaEkrani2Layout.createSequentialGroup()
+                .addGroup(kursHazirlamaEkrani2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(kursHazirlamaEkrani2Layout.createSequentialGroup()
+                        .addGap(78, 78, 78)
+                        .addGroup(kursHazirlamaEkrani2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 785, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton21)))
+                    .addGroup(kursHazirlamaEkrani2Layout.createSequentialGroup()
+                        .addGap(44, 44, 44)
+                        .addComponent(jButton22, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton20, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(66, Short.MAX_VALUE))
+        );
+        kursHazirlamaEkrani2Layout.setVerticalGroup(
+            kursHazirlamaEkrani2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(kursHazirlamaEkrani2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel22)
+                .addGap(54, 54, 54)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton21)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 230, Short.MAX_VALUE)
+                .addGroup(kursHazirlamaEkrani2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton22, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton20, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(17, 17, 17))
+        );
+
+        kursHazirlamaEkrani3.setBackground(new java.awt.Color(255, 255, 255));
+        kursHazirlamaEkrani3.setPreferredSize(new java.awt.Dimension(929, 742));
+
+        jLabel24.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel24.setForeground(new java.awt.Color(204, 0, 0));
+        jLabel24.setText("Kurs Programı Hazırlama Ekranı");
+
+        jLabel25.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel25.setText("Toplam Kurs Maliyeti:");
+
+        jLabel26.setFont(new java.awt.Font("Dialog", 3, 24)); // NOI18N
+        jLabel26.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel26.setText("#MALİYET#");
+
+        jButton23.setBackground(new java.awt.Color(204, 0, 0));
+        jButton23.setForeground(new java.awt.Color(255, 255, 255));
+        jButton23.setText("Geri");
+        jButton23.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton23ActionPerformed(evt);
+            }
+        });
+
+        jButton24.setBackground(new java.awt.Color(0, 102, 0));
+        jButton24.setForeground(new java.awt.Color(255, 255, 255));
+        jButton24.setText("Onayla");
+        jButton24.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton24ActionPerformed(evt);
+            }
+        });
+
+        jLabel27.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel27.setText("Kurs Adı:");
+
+        kurs_adi.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+
+        javax.swing.GroupLayout kursHazirlamaEkrani3Layout = new javax.swing.GroupLayout(kursHazirlamaEkrani3);
+        kursHazirlamaEkrani3.setLayout(kursHazirlamaEkrani3Layout);
+        kursHazirlamaEkrani3Layout.setHorizontalGroup(
+            kursHazirlamaEkrani3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, kursHazirlamaEkrani3Layout.createSequentialGroup()
+                .addContainerGap(259, Short.MAX_VALUE)
+                .addComponent(jLabel24)
+                .addGap(254, 254, 254))
+            .addGroup(kursHazirlamaEkrani3Layout.createSequentialGroup()
+                .addGroup(kursHazirlamaEkrani3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(kursHazirlamaEkrani3Layout.createSequentialGroup()
+                        .addGap(215, 215, 215)
+                        .addComponent(jButton23, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(kursHazirlamaEkrani3Layout.createSequentialGroup()
+                        .addGap(81, 81, 81)
+                        .addGroup(kursHazirlamaEkrani3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel25)
+                            .addComponent(jLabel27))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(kursHazirlamaEkrani3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel26)
+                            .addComponent(kurs_adi, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(kursHazirlamaEkrani3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(kursHazirlamaEkrani3Layout.createSequentialGroup()
+                    .addGap(91, 91, 91)
+                    .addComponent(jButton24, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(725, Short.MAX_VALUE)))
+        );
+        kursHazirlamaEkrani3Layout.setVerticalGroup(
+            kursHazirlamaEkrani3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(kursHazirlamaEkrani3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel24)
+                .addGap(121, 121, 121)
+                .addGroup(kursHazirlamaEkrani3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel25)
+                    .addComponent(jLabel26))
+                .addGap(69, 69, 69)
+                .addGroup(kursHazirlamaEkrani3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel27)
+                    .addComponent(kurs_adi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 378, Short.MAX_VALUE)
+                .addComponent(jButton23, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(35, 35, 35))
+            .addGroup(kursHazirlamaEkrani3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, kursHazirlamaEkrani3Layout.createSequentialGroup()
+                    .addContainerGap(664, Short.MAX_VALUE)
+                    .addComponent(jButton24, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(35, 35, 35)))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -717,7 +1125,7 @@ public class MainProgram extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(55, 55, 55)
                 .addComponent(anaEkran, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(619, Short.MAX_VALUE))
+                .addContainerGap(812, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(751, 751, 751)
@@ -733,13 +1141,28 @@ public class MainProgram extends javax.swing.JPanel {
                     .addGap(0, 0, Short.MAX_VALUE)
                     .addComponent(dersEkleEkrani, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(kursHazirlamaEkrani, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(kursHazirlamaEkrani2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(kursHazirlamaEkrani3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(anaEkran, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(245, Short.MAX_VALUE))
+                .addContainerGap(459, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(447, 447, 447)
@@ -754,6 +1177,21 @@ public class MainProgram extends javax.swing.JPanel {
                 .addGroup(layout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
                     .addComponent(dersEkleEkrani, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(kursHazirlamaEkrani, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(kursHazirlamaEkrani2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(kursHazirlamaEkrani3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(0, 0, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -790,6 +1228,7 @@ public class MainProgram extends javax.swing.JPanel {
                 ders.setDersGunu(gun.getSelectedItem().toString());
                 ders.setDersSaati(saat.getSelectedItem().toString());
                 ders.setDersKapasitesi(Integer.parseInt(kapasite.getText()));
+                ders.setDersSinifi(sinif.getSelectedItem().toString());
                 
                 
                 ders.writeDB();
@@ -804,10 +1243,6 @@ public class MainProgram extends javax.swing.JPanel {
         this.switchPanel(anaEkran);
         
     }//GEN-LAST:event_jButton9ActionPerformed
-
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        this.switchPanel(anaEkran);
-    }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
         this.switchPanel(anaEkran);
@@ -833,30 +1268,10 @@ public class MainProgram extends javax.swing.JPanel {
             }
             
             else {
-                this.addDersBilgisiVT(dersAdi2.getText());
+                this.addDersBilgisiVT(dersAdi2.getText().toString());
             }
         }    
     }//GEN-LAST:event_jButton13ActionPerformed
-
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
-
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
-
-    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField4ActionPerformed
-
-    private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField5ActionPerformed
 
     //Ders Ekle butonu
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
@@ -889,145 +1304,657 @@ public class MainProgram extends javax.swing.JPanel {
         
         //Verdigi dersler tablosu temizleniyor
         int rowCount = table_model.getRowCount();
+        
         //Remove rows one by one from the end of the table
         for (int i = rowCount - 1; i >= 0; i--) {
             table_model.removeRow(i);
         }
         
+        //Fieldlar temizleniyor
+        this.ogretmen_adi.setText("");
+        this.ogretmen_soyadi.setText("");
+        this.ev_tel.setText("");
+        this.cep_tel.setText("");
+        this.email.setText("");
+        this.adres.setText("");
+        
+        
+        this.t_verdigi_dersler.setModel(table_model);
+        this.l_calisabildigiSaatler.setModel(dl);
+        
         this.switchPanel(ogretmenKaydiEkrani);
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+    private void adresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adresActionPerformed
         // TODO add your handling code here:
+    }//GEN-LAST:event_adresActionPerformed
+
+    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+        //Cesitli input kontrolleri yapiliyor
+        if (ogretmen_adi.getText().compareTo("") == 0) {
+
+            JOptionPane.showMessageDialog(this.frame.getContentPane(),"Öğretmen adı boş bırakılamaz!","Hata",JOptionPane.ERROR_MESSAGE);
+        }
+
+        else if (ogretmen_soyadi.getText().compareTo("") == 0) {
+            JOptionPane.showMessageDialog(this.frame.getContentPane(),"Öğretmen soyadı boş bırakılamaz!","Hata",JOptionPane.ERROR_MESSAGE);
+        }
+
+        else if (cep_tel.getText().compareTo("") == 0) {
+            JOptionPane.showMessageDialog(this.frame.getContentPane(),"Cep telefonu boş bırakılamaz!","Hata",JOptionPane.ERROR_MESSAGE);
+        }
+
+        else if (email.getText().compareTo("") == 0) {
+            JOptionPane.showMessageDialog(this.frame.getContentPane(),"E-mail boş bırakılamaz!","Hata",JOptionPane.ERROR_MESSAGE);
+        }
+
+        else if (this.dl.size() == 0) {
+            JOptionPane.showMessageDialog(this.frame.getContentPane(),"Lütfen öğretmenin çalışabildiği saat ekleyiniz!","Hata",JOptionPane.ERROR_MESSAGE);
+        }
+
+        else if (this.table_model.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this.frame.getContentPane(),"Lütfen öğretmenin verebildiği ders ekleyiniz!","Hata",JOptionPane.ERROR_MESSAGE);
+        }
+        
+        else {
+
+            Ogretmen ogretmen = Ogretmen.getInstance();
+            ogretmen.setAd(ogretmen_adi.getText());
+            ogretmen.setSoyad(ogretmen_soyadi.getText());
+            ogretmen.setEvTel(ev_tel.getText());
+            ogretmen.setCepTel(cep_tel.getText());
+            ogretmen.setEmail(email.getText());
+            ogretmen.setAdres(adres.getText());
+
+            ArrayList<String> saatler = new ArrayList<String>();
+            HashMap<String, Integer> derslerBedeller = new HashMap<String, Integer>();
+
+            for (int i = 0; i < table_model.getRowCount(); i++) {
+                derslerBedeller.put(table_model.getValueAt(i, 0).toString(), new Integer(Integer.parseInt(table_model.getValueAt(i, 1).toString())));
+
+            }
+
+            //Calisabilgi saatler nesneye ekleniyor
+            for (int i = 0; i < this.dl.size(); i++) {
+                saatler.add(dl.getElementAt(i));
+            }
+
+            ogretmen.setDerslerBedeller(derslerBedeller);
+            ogretmen.setCalisabildigiSaatler(saatler.toArray(new String[0]));
+
+            //Kullanıcı onayı
+            String[] options = new String[2];
+            options[0] = new String("Evet");
+            options[1] = new String("Hayır");
+            int output = JOptionPane.showOptionDialog(this.frame.getContentPane(), "Öğretmen kaydını eklemek istediğinize emin misiniz?", "Öğretmen Ekleme Onayı", 0, JOptionPane.QUESTION_MESSAGE, null, options, null);
+
+            if (output == 0) {
+                ogretmen.writeDB();
+            }
+
+        }
+
+ 
+
+        
+
     }//GEN-LAST:event_jButton15ActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
-       
-        
+
         String[] saatler = { "9.00", "10.00", "11.00", "12.00", "13.00", "14.00", "15.00", "16.00", "17.00", "18.00",};
-        
-        String saat = (String) JOptionPane.showInputDialog(this.frame, 
-        "Saat seçiniz.",
-        "Saat",
-        JOptionPane.QUESTION_MESSAGE, 
-        null, 
-        saatler, 
-        saatler[0]);
-        
+
+        String saat = (String) JOptionPane.showInputDialog(this.frame,
+            "Saat seçiniz.",
+            "Saat",
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            saatler,
+            saatler[0]);
+
         /* Secim listesine eleman ekleme */
         boolean flag = false;
-        
+
         //Eklenen eleman listede var mi?
         for (int i = 0; i<this.dl.getSize();i++) {
             if (dl.getElementAt(i).compareTo(saat) == 0) {
                 flag = true;
-                
+
             }
-            
+
         }
         //Listede varsa mesaj basiliyor
         if (flag) {
-             JOptionPane.showMessageDialog(this.frame.getContentPane(),"Seçilen saat listede bulunmaktadır!","Hata",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this.frame.getContentPane(),"Seçilen saat listede bulunmaktadır!","Hata",JOptionPane.ERROR_MESSAGE);
         }
-        
+
         //Listede yoksa ekleniyor
-        else {     
+        else {
             this.dl.addElement(saat);
             l_calisabildigiSaatler.setModel(dl);
-            
+
         }
-        
+
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 
         //this.table_model.addRow(new Object[]{"deneme", "deneme"});
-        
+
         /* Oncelikle ders adi soruluyor*/
-        
+
         //Veri tabanindan acilmis dersler cekiliyor
         ArrayList<String> dersAdlari = MainProgram.getDersBilgileri();
         String dersAdlari2[] = dersAdlari.toArray(new String[dersAdlari.size()]);
-        
-        String ders = (String) JOptionPane.showInputDialog(this.frame, 
-        "Ders seçiniz",
-        "Ders",
-        JOptionPane.QUESTION_MESSAGE, 
-        null, 
-        dersAdlari2, 
-        dersAdlari2[0]);
-        
+
+        String ders = (String) JOptionPane.showInputDialog(this.frame,
+            "Ders seçiniz",
+            "Ders",
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            dersAdlari2,
+            dersAdlari2[0]);
+
         //Ders seçildiyse devam ediliyor
-        
+
         if (ders != null) {
-            
-                boolean flag = false;
-            
-                 for (int i = 0; i<table_model.getRowCount();i++) {
-                     if (table_model.getValueAt(i, 0).toString().compareTo(ders) == 0) {
-                         
-                        flag = true;
-                
-                    }
-            
-                 }
-                 
-                 if (flag) {
-                     
-                     JOptionPane.showMessageDialog(this.frame.getContentPane(),"Seçilen ders zaten eklenmiş!","Hata",JOptionPane.ERROR_MESSAGE);
-                
-                 }
-                 
-                 else {
-                     
-                     
-                     
-                    String bedel = JOptionPane.showInputDialog(
-                    frame, 
-                    "Ders için talep edilen bedeli giriniz.", 
-                    "Bedel", 
+
+            boolean flag = false;
+
+            for (int i = 0; i<table_model.getRowCount();i++) {
+                if (table_model.getValueAt(i, 0).toString().compareTo(ders) == 0) {
+
+                    flag = true;
+
+                }
+
+            }
+
+            if (flag) {
+
+                JOptionPane.showMessageDialog(this.frame.getContentPane(),"Seçilen ders zaten eklenmiş!","Hata",JOptionPane.ERROR_MESSAGE);
+
+            }
+
+            else {
+
+                String bedel = JOptionPane.showInputDialog(
+                    frame,
+                    "Ders için talep edilen bedeli giriniz.",
+                    "Bedel",
                     JOptionPane.QUESTION_MESSAGE);
-                
-                
-                    //Kullanıcı bir şey girmezse
-                    if (bedel.compareTo("") == 0) {
-                    
+
+                //Kullanıcı bir şey girmezse
+                if (bedel.compareTo("") == 0) {
+
                     JOptionPane.showMessageDialog(this.frame.getContentPane(),"Ders bedeli boş bırakılamaz!","Hata",JOptionPane.ERROR_MESSAGE);
-                
-                    }
-                
-                    //Tum kontrollerden gecti tabloya ekleniyor
-                    else {
-                        
-                        table_model.addRow(new Object[]{ders, bedel});
-                    
-                                        
-                    }
-                     
-                 }
-                         
-                 
-            
-                
-            
 
-            
-            
+                }
+
+                //Tum kontrollerden gecti tabloya ekleniyor
+                else {
+
+                    table_model.addRow(new Object[]{ders, bedel});
+
+                }
+
+            }
+
         }
-        
-        
-
 
         t_verdigi_dersler.setModel(table_model);
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_emailActionPerformed
+
+    private void ev_telActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ev_telActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ev_telActionPerformed
+
+    private void cep_telActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cep_telActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cep_telActionPerformed
+
+    private void ogretmen_adiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ogretmen_adiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ogretmen_adiActionPerformed
+
+    private void ogretmen_soyadiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ogretmen_soyadiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ogretmen_soyadiActionPerformed
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        this.switchPanel(anaEkran);
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        /* Verilebilecek dersler temizleniyor */
+        
+        int rowCount = tm_eklenebilecek_dersler.getRowCount();
+        
+        //Remove rows one by one from the end of the table
+        for (int i = rowCount - 1; i >= 0; i--) {
+            tm_eklenebilecek_dersler.removeRow(i);
+        }
+        
+        
+        /*Verilen dersler temizleniyor */
+        rowCount = tm_eklenen_dersler.getRowCount();
+        
+        //Remove rows one by one from the end of the table
+        for (int i = rowCount - 1; i >= 0; i--) {
+            tm_eklenen_dersler.removeRow(i);
+        }
+        
+        t_eklenebilecek_dersler.setModel(tm_eklenebilecek_dersler);
+        t_eklenen_dersler.setModel(tm_eklenen_dersler);
+        t_ogretmen_atama.setModel(tm_ogretmen_atama);
+        eklenenDersler.clear();
+        
+        //Butonlar disable ediliyor
+        jButton17.setEnabled(false);
+        jButton18.setEnabled(false);
+        jButton16.setEnabled(false);
+        jButton22.setEnabled(false);
+        
+        
+        this.switchPanel(kursHazirlamaEkrani);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void b_ders_getirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_ders_getirActionPerformed
+        /*Once eklenen ve eklenebilecek ders tabloları temizleniyor*/
+        
+        //Remove rows one by one from the end of the table (Eklenebilecek dersler)
+        for (int i = tm_eklenebilecek_dersler.getRowCount() - 1; i >= 0; i--) {
+            tm_eklenebilecek_dersler.removeRow(i);
+        }
+        
+        //Remove rows one by one from the end of the table (Eklenen dersler)
+        for (int i = tm_eklenen_dersler.getRowCount() - 1; i >= 0; i--) {
+            tm_eklenen_dersler.removeRow(i);
+        }
+        
+        t_eklenebilecek_dersler.setModel(tm_eklenebilecek_dersler);
+        t_eklenen_dersler.setModel(tm_eklenen_dersler);
+        eklenenDersler.clear();
+        jButton17.setEnabled(false);
+        jButton16.setEnabled(false);
+        jButton18.setEnabled(false);
+        
+        
+        /* Seçilen kurs tipine göre eklenebilecek dersleri lsteleme islemi*/
+        
+        
+        String kurs_tipi = s_kurs_tipi.getSelectedItem().toString();
+        
+        
+        
+        Set<String> haftaciSet = new HashSet<String>(Arrays.asList("Pazartesi","Salı","Çarşamba","Perşembe","Cuma"));
+        Set<String> haftasonuSet = new HashSet<String>(Arrays.asList("Cumartesi","Pazar"));
+        Set<String> searchSet;
+        
+        
+        if (kurs_tipi.compareTo("Hafta İçi") == 0) {
+            
+            searchSet = haftaciSet;
+            
+        }
+        
+        else {
+            
+            searchSet = haftasonuSet;
+        }
+        
+        
+        
+        //Oncelikle vtden tum dersler cekiliyor(bir ogretmene atanmamis dersler)
+        
+        String sql = "SELECT * FROM Ders WHERE ogretmen_id IS NULL";
+        Connection conn = MainProgram.getDatabaseConnection();
+        ResultSet rs;
+        boolean flag = false;
+
+        try {
+            Statement stmt = conn.createStatement();
+
+            rs = stmt.executeQuery(sql);
+
+            //Vtden gelen derslerden uygun turde olanlari secilip tabloya ekleniyor(hafta ici veya hafta sonu)
+            while (rs.next()) {
+                
+                //Eger secilen tip ile uyusan bir ders ise tabloda gosteriliyor
+                if (searchSet.contains(rs.getString("gun")) ) {
+                    tm_eklenebilecek_dersler.addRow( new Object[]{rs.getInt("id"), rs.getString("ders_adi"), rs.getString("gun"), rs.getString("saat")} );
+                    flag=true;
+                }
+                
+
+            }
+
+            conn.close();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        
+        
+        //Uygun turde ders tabloya eklenebildiyse ders ekle butonu aktif ediliyor
+        if (flag) {
+            jButton17.setEnabled(true);
+        }
+        
+        
+        
+    }//GEN-LAST:event_b_ders_getirActionPerformed
+
+    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
+        
+
+        /* Eklenen dersler tek tek Ders nesnesi icinde bir listede saklaniyor*/
+        int dersSayisi = t_eklenen_dersler.getRowCount();
+        eklenenDersler.clear();
+        
+        
+        Ders ders;
+        
+        for (int i = 0; i < dersSayisi; i++) {
+            ders = new Ders();
+            
+            ders.setId(Integer.parseInt(tm_eklenen_dersler.getValueAt(i, 0).toString()));
+            ders.setDersAdi(tm_eklenen_dersler.getValueAt(i, 1).toString());
+            ders.setDersGunu(tm_eklenen_dersler.getValueAt(i, 2).toString());
+            ders.setDersSaati(tm_eklenen_dersler.getValueAt(i, 3).toString());
+            
+            eklenenDersler.add(ders);
+        }
+        
+        
+        /*Ogretmen atama tablosu onceden doldurulmasina istinaden bosaltiliyor*/
+        
+        //Remove rows one by one from the end of the table
+        int rowCount = t_ogretmen_atama.getRowCount();
+        
+        for (int i = rowCount - 1; i >= 0; i--) {
+            tm_ogretmen_atama.removeRow(i);
+        }
+        
+        
+        //Eklenen dersler basiliyor
+        for (Ders eklenen_ders : eklenenDersler) {
+            tm_ogretmen_atama.addRow(new Object[]{eklenen_ders.getDersAdi(), eklenen_ders.getDersSaati()});
+        }
+        
+        t_ogretmen_atama.setModel(tm_ogretmen_atama);
+
+        this.switchPanel(kursHazirlamaEkrani2);
+    }//GEN-LAST:event_jButton16ActionPerformed
+
+    private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
+        this.switchPanel(anaEkran);
+    }//GEN-LAST:event_jButton19ActionPerformed
+
+    private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
+        this.switchPanel(kursHazirlamaEkrani);
+    }//GEN-LAST:event_jButton20ActionPerformed
+
+    private void jButton22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton22ActionPerformed
+        
+        /*Eklenen derslerin seçilen öğretmenlere göre bedelleri toplanıp maliyet hesaplanyor*/
+        
+        
+        for (int i = 0; i < tm_ogretmen_atama.getRowCount(); i++) {
+            maliyet += (int)tm_ogretmen_atama.getValueAt(i, 5);
+        }
+        
+        
+        
+        jLabel26.setText(Integer.toString(maliyet) + " TL");
+        
+        kurs_adi.setText("");
+                
+        this.switchPanel(kursHazirlamaEkrani3);
+    }//GEN-LAST:event_jButton22ActionPerformed
+
+    private void sinifActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sinifActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sinifActionPerformed
+
+    private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
+        this.switchPanel(kursHazirlamaEkrani2);
+    }//GEN-LAST:event_jButton23ActionPerformed
+
+    private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
+        
+        
+        if (kurs_adi.getText().toString().compareTo("") == 0) {
+            
+            JOptionPane.showMessageDialog(this.frame.getContentPane(),"Kurs adı boş bırakılamaz!","Hata",JOptionPane.ERROR_MESSAGE);
+            
+        }
+        
+        else {
+
+            String[] options = new String[2];
+            options[0] = new String("Evet");
+            options[1] = new String("Hayır");
+            int output = JOptionPane.showOptionDialog(this.frame.getContentPane(), "Kursu sisteme kayıt etmek istediğinize emin misiniz?", "Kurs Ekleme Onayı", 0, JOptionPane.QUESTION_MESSAGE, null, options, null);
+
+            if (output == 0) {
+                
+                
+                //Derslere secilen ogretmenler ataniyor
+                for (int i = 0; i < tm_ogretmen_atama.getRowCount(); i++) {  
+                    eklenenDersler.get(i).ogretmenAta( Integer.parseInt(tm_ogretmen_atama.getValueAt(i, 2).toString()) );
+                }
+                
+                
+                
+
+                
+                //Kurs aciliyor
+                Kurs kurs = new Kurs();
+
+                kurs.setAd(kurs_adi.getText().toString());
+                kurs.setDersler(eklenenDersler);
+                kurs.setTip(s_kurs_tipi.getSelectedItem().toString());
+                kurs.setMaliyet(maliyet);
+
+                boolean response = kurs.writeDB();
+                
+                if (response) {
+                    JOptionPane.showMessageDialog(this.frame.getContentPane(),"Kurs sisteme başarılı bir şekilde kayıt edildi!","Başarı",JOptionPane.INFORMATION_MESSAGE);
+                }
+                
+                
+
+            }
+
+        }
+        
+    }//GEN-LAST:event_jButton24ActionPerformed
+
+    private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
+        
+        int selectedRowIndex = t_eklenebilecek_dersler.getSelectedRow();
+        
+        if (selectedRowIndex != -1) {
+            
+            String eklenecekGun = tm_eklenebilecek_dersler.getValueAt(selectedRowIndex, 2).toString();
+            String eklenecekSaat = tm_eklenebilecek_dersler.getValueAt(selectedRowIndex, 3).toString();
+            
+            String eklenmisGun;
+            String eklenmisSaat;
+            
+            boolean flag = false;
+            
+            //Eklenilecek dersin gun ve saatinde baska ders eklenmis mi?
+            for (int i = 0; i < t_eklenen_dersler.getRowCount(); i++) {
+                eklenmisGun = tm_eklenen_dersler.getValueAt(i, 2).toString();
+                eklenmisSaat = tm_eklenen_dersler.getValueAt(i, 3).toString();
+                
+                if ( (eklenmisGun.compareTo(eklenecekGun) == 0) && (eklenmisSaat.compareTo(eklenecekSaat) == 0) ) {
+                    flag = true;           
+                }
+                
+            }
+            
+            if (flag) {
+                JOptionPane.showMessageDialog(this.frame.getContentPane(),"Eklenmeye çalışılan dersin gün ve saatinde bir ders eklenen derslerde mevcuttur!","Hata",JOptionPane.ERROR_MESSAGE);
+            }
+            
+            else {
+                //Secilen ders bir asagidaki eklenen dersler tablosuna aliniyor
+                tm_eklenen_dersler.addRow(new Object[]{tm_eklenebilecek_dersler.getValueAt(selectedRowIndex, 0), tm_eklenebilecek_dersler.getValueAt(selectedRowIndex, 1), tm_eklenebilecek_dersler.getValueAt(selectedRowIndex, 2), tm_eklenebilecek_dersler.getValueAt(selectedRowIndex, 3)});
+
+                //Ders sil ve Devam Et butonu aktif ediliyor
+                jButton18.setEnabled(true);
+                jButton16.setEnabled(true);
+            }
+
+        }
+
+    }//GEN-LAST:event_jButton17ActionPerformed
+
+    private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
+        
+        int selectedRowIndex = t_eklenen_dersler.getSelectedRow();
+        
+        //Secilen satır varsa
+        if (selectedRowIndex != -1) {
+            tm_eklenen_dersler.removeRow(selectedRowIndex);
+            
+            //Eklenen dersler tablosu bosaldi mi? Bosaldiysa Devam Et ve Ders Sil butonları disable edilir
+            if(t_eklenen_dersler.getRowCount() == 0) {
+                jButton18.setEnabled(false);
+                jButton16.setEnabled(false);
+            }
+            
+        }
+    }//GEN-LAST:event_jButton18ActionPerformed
+
+    private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
+
+        /* Tabloda secilen dersin nesnesine ulasilir*/
+        int secilenSatir = t_ogretmen_atama.getSelectedRow();
+        
+        if (secilenSatir != -1) {
+
+            Ders ders = eklenenDersler.get(secilenSatir);
+
+            /* Veri tabanindan dersi vermeye her acidan musait ogretmenler cekilir*/
+            String sql = "SELECT id,ad,soyad,bedel FROM Ogretmen,Calisabildigi_Saatler,Verebildigi_Dersler WHERE id=Calisabildigi_Saatler.ogretmen_id AND "
+                    + "id=Verebildigi_Dersler.ogretmen_id AND ders_adi=? AND saat=?";
+            Connection conn = MainProgram.getDatabaseConnection();
+
+            ArrayList<Ogretmen> ogretmenler = new ArrayList<Ogretmen>(); //Bu liste ogr ad soyadiyla birlikte idyi de tutuyor
+            ArrayList<String> ogretmenAdSoyadlari = new ArrayList<String>(); //Bu liste kullanıcıya ogretmen seciminde ogr ad soyadlarini gostermek icin
+            ArrayList<Integer> dersBedelleri = new ArrayList<Integer>();
+
+            try {
+
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, ders.getDersAdi());
+                pstmt.setString(2, ders.getDersSaati());
+
+                ResultSet rs = pstmt.executeQuery();
+                Ogretmen ogretmen;
+
+                //Veri tabanindan gelen her satir sirayla bir Ogretmen nesnesi icinde saklanip listeye ekleniyor
+                while (rs.next()) {
+                    ogretmen = new Ogretmen();
+
+                    String ogrAd = rs.getString("ad");
+                    String ogrSoyad = rs.getString("soyad");
+
+                    ogretmen.setAd(ogrAd);
+                    ogretmen.setSoyad(ogrSoyad);
+                    ogretmen.setId(rs.getInt("id"));
+
+                    ogretmenler.add(ogretmen);
+                    ogretmenAdSoyadlari.add(ogrAd + " " + ogrSoyad);
+                    dersBedelleri.add(new Integer(rs.getInt("bedel")));
+
+                }
+
+                conn.close();
+
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+
+            //Dersi verebilecek ogretmen varsa
+            if (ogretmenAdSoyadlari.size() != 0) {
+
+                Object ogretmenAdSoyadlari2[] = ogretmenAdSoyadlari.toArray();
+
+                Object secilenOgr = JOptionPane.showInputDialog(this.frame,
+                        "Öğretmen seçiniz.",
+                        "Öğretmen",
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        ogretmenAdSoyadlari2,
+                        ogretmenAdSoyadlari2[0]);
+
+                //Listeden secilen ogretmenin indexi aliniyor. Bu index Ogretmen nesnelerinin tutuldugu ArrayList uzerinde kullanilacak.
+                int index = 0;
+                if (secilenOgr != null) {
+
+                    for (Object o : ogretmenAdSoyadlari2) {
+                        if (secilenOgr == o) {
+                            break;
+                        }
+                        index++;
+                    }
+
+                }
+
+                //Tabloda satir, eklenen ogretmen ile guncelleniyor
+                tm_ogretmen_atama.setValueAt(ogretmenler.get(index).getId(), secilenSatir, 2);
+                tm_ogretmen_atama.setValueAt(ogretmenler.get(index).getAd(), secilenSatir, 3);
+                tm_ogretmen_atama.setValueAt(ogretmenler.get(index).getSoyad(), secilenSatir, 4);
+                tm_ogretmen_atama.setValueAt(dersBedelleri.get(index).intValue(), secilenSatir, 5);
+
+                boolean flag = false;
+
+                //Tum derslere ogretmen atandiysa Devam Et butonu enable ediliyor
+                for (int i = 0; i < tm_ogretmen_atama.getRowCount(); i++) {
+                    if (tm_ogretmen_atama.getValueAt(i, 2) == null) {
+                        flag = true;
+                    }
+                }
+
+                jButton22.setEnabled(!flag);
+
+            } else {
+
+                JOptionPane.showMessageDialog(this.frame.getContentPane(), "Dersi verebilecek öğretmen bulunmamaktadır!", "Hata", JOptionPane.ERROR_MESSAGE);
+
+            }
+
+        }
+        
+
+        
+        
+
+
+    }//GEN-LAST:event_jButton21ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField adres;
     private javax.swing.JPanel anaEkran;
+    private javax.swing.JButton b_ders_getir;
+    private javax.swing.JTextField cep_tel;
     private javax.swing.JComboBox dersAdi;
     private javax.swing.JTextField dersAdi2;
     private javax.swing.JPanel dersEkleEkrani;
     private javax.swing.JPanel dersKaydiEkrani;
+    private javax.swing.JTextField email;
+    private javax.swing.JTextField ev_tel;
     private javax.swing.JComboBox gun;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
@@ -1036,7 +1963,16 @@ public class MainProgram extends javax.swing.JPanel {
     private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton15;
+    private javax.swing.JButton jButton16;
+    private javax.swing.JButton jButton17;
+    private javax.swing.JButton jButton18;
+    private javax.swing.JButton jButton19;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton20;
+    private javax.swing.JButton jButton21;
+    private javax.swing.JButton jButton22;
+    private javax.swing.JButton jButton23;
+    private javax.swing.JButton jButton24;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
@@ -1054,7 +1990,16 @@ public class MainProgram extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1064,15 +2009,24 @@ public class MainProgram extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTextField kapasite;
+    private javax.swing.JPanel kursHazirlamaEkrani;
+    private javax.swing.JPanel kursHazirlamaEkrani2;
+    private javax.swing.JPanel kursHazirlamaEkrani3;
+    private javax.swing.JTextField kurs_adi;
     private javax.swing.JList l_calisabildigiSaatler;
     private javax.swing.JPanel ogretmenKaydiEkrani;
+    private javax.swing.JTextField ogretmen_adi;
+    private javax.swing.JTextField ogretmen_soyadi;
+    private javax.swing.JComboBox s_kurs_tipi;
     private javax.swing.JComboBox saat;
+    private javax.swing.JComboBox sinif;
+    private javax.swing.JTable t_eklenebilecek_dersler;
+    private javax.swing.JTable t_eklenen_dersler;
+    private javax.swing.JTable t_ogretmen_atama;
     private javax.swing.JTable t_verdigi_dersler;
     // End of variables declaration//GEN-END:variables
 
