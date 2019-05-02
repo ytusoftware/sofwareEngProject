@@ -172,4 +172,75 @@ public class Kursiyer extends Kisi{
     }
     
     
+    //Kursiyerin kayıt yaptırdığı tüm kursların satış bilgilerini döndürür
+    public ArrayList<Satis> kursSatinAlimlariniGetir() {
+
+        String sql = "SELECT * FROM Kursiyer_Kurs WHERE kursiyer_id=?";
+
+        Connection conn = MainProgram.getDatabaseConnection();
+        ArrayList<Satis> satinAlimlar = new ArrayList<>();
+
+        try {
+
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            pstmt.setInt(1, this.id);
+            
+            ResultSet rs = pstmt.executeQuery();
+ 
+            
+            while (rs.next()) {
+                
+                satinAlimlar.add( new Satis(rs.getString("kurs_adi"), rs.getInt("ucret"), rs.getString("tarih"), rs.getString("odeme_tipi")) );
+                
+            }
+
+
+            conn.close();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return satinAlimlar;
+
+    }
+    
+    
+    
+    //Kursiyeri parametre olarak verilen kurstan çıkarır
+    public boolean kurstanCikar(String kursAdi) {
+
+        String sql = "DELETE FROM Kursiyer_Kurs WHERE kursiyer_id=? AND kurs_adi=?";
+        String sql2 = "UPDATE Kurs SET doluluk=doluluk-1 WHERE kurs_adi=?";
+
+        Connection conn = MainProgram.getDatabaseConnection();
+
+        try {
+
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            PreparedStatement pstmt2 = conn.prepareStatement(sql2);
+            
+            pstmt.setInt(1, this.id);
+            pstmt.setString(2, kursAdi);
+            
+            
+            pstmt.executeUpdate();
+            
+            pstmt2.setString(1, kursAdi);
+            pstmt2.executeUpdate();
+ 
+            conn.close();
+            return true;
+            
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return false;
+                
+
+    }
+    
+    
 }

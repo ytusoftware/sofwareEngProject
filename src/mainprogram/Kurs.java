@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 /**
@@ -250,4 +251,92 @@ public class Kurs {
 
     }
     
+    
+    //Veri tabanindan adi verilen kursun baslama tarihini dondurur
+    public static String baslamaTarihiGetir(String kursAdi) {
+        String sql = "SELECT tarih FROM Kurs WHERE kurs_adi=?";
+        Connection conn = MainProgram.getDatabaseConnection();
+        String tarih = "";
+
+        try {
+
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            pstmt.setString(1, kursAdi);
+
+            ResultSet rs = pstmt.executeQuery();
+            
+            tarih = rs.getString("tarih");
+            conn.close();
+            
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return tarih;
+    }
+    
+    
+    //Veri tabanindaki tum kurslari dondurur
+    public static ArrayList<Kurs> tumKurslariGetir() {
+        String sql = "SELECT * FROM Kurs";
+
+        Connection conn = MainProgram.getDatabaseConnection();
+        ArrayList<Kurs> kurslar = new ArrayList<>();
+
+        try {
+
+            Statement stmt = conn.createStatement();
+
+            Kurs kurs;
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                kurs = new Kurs();
+
+                kurs.setAd(rs.getString("kurs_adi"));
+                kurs.setDoluluk(rs.getInt("doluluk"));
+                kurs.setKapasite(rs.getInt("kapasite"));
+                kurs.setTarih(rs.getString("tarih"));
+                kurs.setTip(rs.getString("kurs_tipi"));
+                kurs.setUcret(rs.getInt("ucret"));
+
+                kurslar.add(kurs);
+
+            }
+
+            conn.close();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return kurslar;
+    }
+
+    public boolean ucretGuncelle(int yeniUcret) {
+
+        String sql = "UPDATE Kurs SET ucret=? WHERE kurs_adi=?";
+        Connection conn = MainProgram.getDatabaseConnection();
+
+        try {
+
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            pstmt.setInt(1, yeniUcret);
+            pstmt.setString(2, this.ad);
+
+            pstmt.executeUpdate();
+            conn.close();
+            return true;
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return false;
+
+    }
+
 }
