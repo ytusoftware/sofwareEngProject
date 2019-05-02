@@ -207,4 +207,40 @@ public class Kursiyer extends Kisi{
     }
     
     
+    
+    //Kursiyeri parametre olarak verilen kurstan çıkarır
+    public boolean kurstanCikar(String kursAdi) {
+
+        String sql = "DELETE FROM Kursiyer_Kurs WHERE kursiyer_id=? AND kurs_adi=?";
+        String sql2 = "UPDATE Kurs SET doluluk=doluluk-1 WHERE kurs_adi=?";
+
+        Connection conn = MainProgram.getDatabaseConnection();
+
+        try {
+
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            PreparedStatement pstmt2 = conn.prepareStatement(sql2);
+            
+            pstmt.setInt(1, this.id);
+            pstmt.setString(2, kursAdi);
+            
+            
+            pstmt.executeUpdate();
+            
+            pstmt2.setString(1, kursAdi);
+            pstmt2.executeUpdate();
+ 
+            conn.close();
+            return true;
+            
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return false;
+                
+
+    }
+    
+    
 }

@@ -5,11 +5,17 @@
  */
 package mainprogram;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
 /**
  *
  * @author tekin
  */
-public abstract class Kisi {
+public class Kisi {
     
     protected int id;
     protected String ad;
@@ -78,6 +84,6 @@ public abstract class Kisi {
     }
     
     
-    
-    
+
+        
 }

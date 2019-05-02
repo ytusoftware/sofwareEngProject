@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -115,6 +116,116 @@ public class Ogretmen extends Kisi{
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+    
+    
+    
+    //Veri tabanindaki tum ogretmenleri dondurur
+    public static ArrayList<Ogretmen> tumOgretmenleriGetir() {
+
+        String sql = "SELECT * FROM Ogretmen";
+
+        Connection conn = MainProgram.getDatabaseConnection();
+        ArrayList<Ogretmen> ogretmenler = new ArrayList<>();
+
+        try {
+            Statement stmt = conn.createStatement();
+
+            ResultSet rs = stmt.executeQuery(sql);
+
+            Ogretmen ogretmen;
+
+            while (rs.next()) {
+
+                ogretmen = new Ogretmen();
+
+                ogretmen.setId(rs.getInt("id"));
+                ogretmen.setAd(rs.getString("ad"));
+                ogretmen.setSoyad(rs.getString("soyad"));
+                ogretmen.setEvTel(rs.getString("ev_tel"));
+                ogretmen.setCepTel(rs.getString("cep_tel"));
+                ogretmen.setAdres(rs.getString("adr"));
+                ogretmen.setEmail(rs.getString("email"));
+
+                ogretmenler.add(ogretmen);
+            }
+
+            conn.close();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return ogretmenler;
+
+    }
+    
+    
+    
+    //Veri tabanindan ogretmenin calisabildigi saatleri dondurur
+    public ArrayList<String> calisabildigiSaatleriGetir() {
+
+        String sql = "SELECT saat FROM Calisabildigi_Saatler WHERE ogretmen_id=?";
+
+        Connection conn = MainProgram.getDatabaseConnection();
+        ArrayList<String> saatler = new ArrayList<>();
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            pstmt.setInt(1, this.id);
+            
+            ResultSet rs = pstmt.executeQuery();
+
+
+            while (rs.next()) {
+                
+                saatler.add(rs.getString("saat"));
+
+            }
+
+            conn.close();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return saatler;
+
+    }
+    
+    
+    
+    //Veri tabanindan ogretmenin verebildigi dersleri dondurur
+    public HashMap<String, Integer> verebildigiDersleriGetir() {
+
+        String sql = "SELECT ders_adi,bedel FROM Verebildigi_Dersler WHERE ogretmen_id=?";
+
+        Connection conn = MainProgram.getDatabaseConnection();
+        HashMap<String, Integer> verebildigiDersler = new HashMap<String, Integer>();
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            pstmt.setInt(1, this.id);
+            
+            ResultSet rs = pstmt.executeQuery();
+
+
+            while (rs.next()) {
+                
+                verebildigiDersler.put(rs.getString("ders_adi"),new Integer(rs.getInt("bedel")));
+
+            }
+
+            conn.close();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return verebildigiDersler;
+
     }
     
 }
