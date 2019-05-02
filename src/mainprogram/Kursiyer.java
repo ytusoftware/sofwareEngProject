@@ -172,4 +172,39 @@ public class Kursiyer extends Kisi{
     }
     
     
+    //Kursiyerin kayıt yaptırdığı tüm kursların satış bilgilerini döndürür
+    public ArrayList<Satis> kursSatinAlimlariniGetir() {
+
+        String sql = "SELECT * FROM Kursiyer_Kurs WHERE kursiyer_id=?";
+
+        Connection conn = MainProgram.getDatabaseConnection();
+        ArrayList<Satis> satinAlimlar = new ArrayList<>();
+
+        try {
+
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            pstmt.setInt(1, this.id);
+            
+            ResultSet rs = pstmt.executeQuery();
+ 
+            
+            while (rs.next()) {
+                
+                satinAlimlar.add( new Satis(rs.getString("kurs_adi"), rs.getInt("ucret"), rs.getString("tarih"), rs.getString("odeme_tipi")) );
+                
+            }
+
+
+            conn.close();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return satinAlimlar;
+
+    }
+    
+    
 }
