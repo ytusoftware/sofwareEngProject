@@ -139,9 +139,7 @@ public class Kurs {
         String sql = "";
         Kurs kurs;
         ArrayList<Kurs> secilebilecekKurslar = new ArrayList<Kurs>();
-        
-        
-        
+     
         //Tum dersleri aynı anda iceren dersleri bulmak icin INTERSECT ile sql sorgusu yazilmali
         for (int i = 0; i < dersler.size(); i++) {
             
@@ -158,11 +156,8 @@ public class Kurs {
             }
             
         }
-        
-        
-        
+       
         Connection conn = MainProgram.getDatabaseConnection();
-        
         
         try {
             
@@ -178,13 +173,10 @@ public class Kurs {
                 k += 3;
             }   
             
-
-
             ResultSet rs = pstmt.executeQuery();
             
             //Veri tabanindan gelen kurslarin nesnesi olusturulup tek tek listeye ekleniyor
             while (rs.next()) {
-                
                 
                 kurs = new Kurs();
                 
@@ -209,14 +201,12 @@ public class Kurs {
         
     }
     
-    
     public ArrayList<Ders> getDerslerDB() {
 
         String sql = "SELECT id,ders_adi,gun,saat,sinif FROM Ders WHERE kurs_adi=?";
         Connection conn = MainProgram.getDatabaseConnection();
         ArrayList<Ders> icerdigiDersler = new ArrayList<>();
         
-
         try {
 
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -225,7 +215,6 @@ public class Kurs {
             
             ResultSet rs = pstmt.executeQuery();
             Ders ders;
-            
             
             //Veri tabanindan gelen kurslarin nesnesi olusturulup tek tek listeye ekleniyor
             while (rs.next()) {
@@ -250,7 +239,6 @@ public class Kurs {
         return icerdigiDersler;
 
     }
-    
     
     //Veri tabanindan adi verilen kursun baslama tarihini dondurur
     public static String baslamaTarihiGetir(String kursAdi) {
