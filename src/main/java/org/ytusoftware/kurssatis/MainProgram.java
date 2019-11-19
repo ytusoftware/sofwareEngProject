@@ -3449,32 +3449,26 @@ public class MainProgram extends javax.swing.JPanel {
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
         this.switchPanel(anaEkran);
     }//GEN-LAST:event_jButton25ActionPerformed
-
-    private void jButton29ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton29ActionPerformed
-
+    
+    private void satisEkrani1(){
         //Secilebilecek kurs tablosu onceden doldurulduysa temizleniyor
         int rowCount = tm_secilebilecek_kurslar.getRowCount();
-
         
         //Remove rows one by one from the end of the table
         for (int i = rowCount - 1; i >= 0; i--) {
             tm_secilebilecek_kurslar.removeRow(i);
         }
-        
-        
+
         t_secilebilecek_kurslar.setModel(tm_secilebilecek_kurslar);
         
+        Controller ct = new Controller();
+        String mm = max_miktar.getText().toString();
+        String message = ct.checkFields(lm_yer_alacak_dersler, mm);
         
-        
-        if (lm_yer_alacak_dersler.isEmpty()) {
-            JOptionPane.showMessageDialog(this.frame.getContentPane(), "Lütfen kursta yer alacak ders ekleyiniz!", "Hata", JOptionPane.ERROR_MESSAGE);
+        if(!message.isEmpty()){
+            JOptionPane.showMessageDialog(this.frame.getContentPane(), message, "Hata", JOptionPane.ERROR_MESSAGE);
         }
         
-        else if (max_miktar.getText().toString().compareTo("") == 0){
-            JOptionPane.showMessageDialog(this.frame.getContentPane(), "Lütfen ödenebilecek max miktar giriniz!", "Hata", JOptionPane.ERROR_MESSAGE);
-        }
-        
-       
         //Sorun yok devam ediliyor
         else {
             
@@ -3485,10 +3479,8 @@ public class MainProgram extends javax.swing.JPanel {
                 yerAlacakDersler.add( lm_yer_alacak_dersler.getElementAt(i) );
             }
             
-            
             //Uygun kurslar alinir
-            ArrayList<Kurs> uygunKurslar = Kurs.getsecilebilecekKurslar(yerAlacakDersler, kurs_zamani_c.getSelectedItem().toString(), Integer.parseInt(max_miktar.getText().toString()) );
-            
+            ArrayList<Kurs> uygunKurslar = ct.getCourses(yerAlacakDersler, kurs_zamani_c, max_miktar);
             
             //Kurslar tabloda gosterilir
             for (Kurs kurs : uygunKurslar) {
@@ -3498,15 +3490,13 @@ public class MainProgram extends javax.swing.JPanel {
                 if (LocalDate.parse(kurs.getTarih()).compareTo(LocalDate.now()) > 0) {
                     tm_secilebilecek_kurslar.addRow(new Object[]{kurs.getAd(), kurs.getTip(), kurs.getTarih(), kurs.getKapasite(), kurs.getDoluluk(),kurs.getUcret()});
                 }
-
             }
-            
-            
             this.switchPanel(kursSatisEkrani2_1);
-            
         }
-     
-        
+    }
+    
+    private void jButton29ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton29ActionPerformed
+        this.satisEkrani1();
     }//GEN-LAST:event_jButton29ActionPerformed
 
     private void jButton28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton28ActionPerformed
@@ -3523,7 +3513,6 @@ public class MainProgram extends javax.swing.JPanel {
             tm_icerdigi_dersler.removeRow(i);
         }
         
-        
         //Secilen satırdaki kursun içerdigi dersler çekiliyor
         int rowIndex = t_secilebilecek_kurslar.getSelectedRow();
         System.out.println(rowIndex);
@@ -3531,9 +3520,8 @@ public class MainProgram extends javax.swing.JPanel {
 
             String kursAdi = tm_secilebilecek_kurslar.getValueAt(rowIndex, 0).toString();
 
-            Kurs kurs = new Kurs();
-            kurs.setAd(kursAdi);
-            ArrayList<Ders> dersler = kurs.getDerslerDB();
+            Controller ct = new Controller();
+            ArrayList<Ders> dersler = ct.getClasses(kursAdi);
 
             for (Ders ders : dersler) {
                 //{"Ders Id", "Ders Adı","Ders Günü","Ders Saati","Ders Sınıfı"}
@@ -3733,14 +3721,12 @@ public class MainProgram extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this.frame.getContentPane(), "Lütfen kursiyer tipi seçiniz!", "Hata", JOptionPane.ERROR_MESSAGE);
         }
         
-        
         else if (kursiyer_tipi_c.getSelectedItem().toString().compareTo("Yeni Kayıt") == 0) {
             
             //Odeme yontemi sifirlaniyor
             odeme_yontemi_c.setSelectedIndex(0);
             
             this.switchPanel(kursSatisEkrani4);
-            
         }
         
         else {
@@ -3750,7 +3736,6 @@ public class MainProgram extends javax.swing.JPanel {
             for (int i = tm_kayitli_kursiyerler.getRowCount() - 1; i >= 0; i--) {
                 tm_kayitli_kursiyerler.removeRow(i);
             }
-            
 
             //Odeme yontemi sıfirlaniyor
             odeme_yontemi_2_c.setSelectedIndex(0);
@@ -3759,7 +3744,6 @@ public class MainProgram extends javax.swing.JPanel {
             t_kayitli_kursiyerler.setRowSorter(Tablesorter);
             t_kayitli_kursiyerler.setModel(tm_kayitli_kursiyerler);
             
-
             //Search box filtering
             search_box.getDocument().addDocumentListener(
                     new DocumentListener() {
@@ -3776,8 +3760,6 @@ public class MainProgram extends javax.swing.JPanel {
                         }
                     });
             
-            
-            
             //Kursiyerler listeleniyor
             ArrayList<Kursiyer> kursiyerler = Kursiyer.tumKursiyerleriGetir();
             
@@ -3786,9 +3768,6 @@ public class MainProgram extends javax.swing.JPanel {
                 tm_kayitli_kursiyerler.addRow(new Object[]{kursiyer.getId(),kursiyer.getAd(),kursiyer.getSoyad(), kursiyer.getEmail()});
                 
             }
- 
-            
-            
 
             this.switchPanel(kursSatisEkrani4_2);
         }
@@ -3805,20 +3784,13 @@ public class MainProgram extends javax.swing.JPanel {
 
     private void jButton38ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton38ActionPerformed
         //Cesitli input kontrolleri yapiliyor
-        if (kursiyer_adi.getText().compareTo("") == 0) {
-
-            JOptionPane.showMessageDialog(this.frame.getContentPane(), "Kursiyer adı boş bırakılamaz!", "Hata", JOptionPane.ERROR_MESSAGE);
-        } else if (kursiyer_soyadi.getText().compareTo("") == 0) {
-            JOptionPane.showMessageDialog(this.frame.getContentPane(), "Kursiyer soyadı boş bırakılamaz!", "Hata", JOptionPane.ERROR_MESSAGE);
-        } else if (cep_tel1.getText().compareTo("") == 0) {
-            JOptionPane.showMessageDialog(this.frame.getContentPane(), "Cep telefonu boş bırakılamaz!", "Hata", JOptionPane.ERROR_MESSAGE);
-        } else if (email1.getText().compareTo("") == 0) {
-            JOptionPane.showMessageDialog(this.frame.getContentPane(), "E-mail boş bırakılamaz!", "Hata", JOptionPane.ERROR_MESSAGE);
-        } else if(odeme_yontemi_c.getSelectedIndex() == 0) {
-            JOptionPane.showMessageDialog(this.frame.getContentPane(), "Lütfen ödeme yöntemi seçiniz!", "Hata", JOptionPane.ERROR_MESSAGE);
-        }
+        Controller ct = new Controller();
         
-        else {
+        
+        String message = ct.checkTextField(kursiyer_adi, kursiyer_soyadi, cep_tel1, email1, odeme_yontemi_c);
+        if(!message.isEmpty()){
+            JOptionPane.showMessageDialog(this.frame.getContentPane(), message, "Hata", JOptionPane.ERROR_MESSAGE);
+        } else {
             Kursiyer kursiyer = new Kursiyer();
             ArrayList<Satis> satinAlim = new ArrayList<>();
             
